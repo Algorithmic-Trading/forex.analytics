@@ -14,6 +14,7 @@ IndicatorTreeNode::IndicatorTreeNode(
 
 	sign_uniform_dist = std::uniform_int_distribution<int>(0, 1);
 	indicator_uniform_dist = std::uniform_int_distribution<int>(0, indicators.size() - 1);
+  perturbation_normal_dist = std::normal_distribution<double>(1, 0.2);
 }
 
 IndicatorTreeNode::~IndicatorTreeNode() {
@@ -39,8 +40,9 @@ bool IndicatorTreeNode::Evaluate(
 }
 
 void IndicatorTreeNode::GenerateRandomValue() {
-  this->GenerateRandomSign();
-  this->GenerateRandomIndicator();
+  this->value *= perturbation_normal_dist(engine);
+  /*this->GenerateRandomSign();
+  this->GenerateRandomIndicator();*/
 }
 
 void IndicatorTreeNode::GenerateRandomSign() {
