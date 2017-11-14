@@ -73,7 +73,7 @@ void IndicatorTreeNode::Copy(TreeNode* destination) const {
   IndicatorTreeNode* dest = reinterpret_cast<IndicatorTreeNode*>(destination);
 
   dest->value = this->value;
-  dest->indicator = this->indicator.c_str();
+  dest->indicator = this->indicator;
   dest->sign = this->sign;
 }
 
@@ -81,7 +81,7 @@ TreeNode* IndicatorTreeNode::Copy() const {
   IndicatorTreeNode* dest = new IndicatorTreeNode(this->_indicators);
 
   dest->value = this->value;
-  dest->indicator = this->indicator.c_str();
+  dest->indicator = this->indicator;
   dest->sign = this->sign;
 
   return dest;

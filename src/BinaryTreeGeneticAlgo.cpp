@@ -69,12 +69,108 @@ void BinaryTreeGeneticAlgo::Crossover(std::vector<BinaryTreeChromosome*>* genera
 	}
 }
 
+TreeNode * CutTree(
+	TreeNode* node,
+	unsigned int cuttingPoint,
+	unsigned int i);
+TreeNode * CutTree(
+	TreeNode* node,
+	unsigned int cuttingPoint,
+	unsigned int i) {
+	if (node->left != nullptr && node->right != nullptr) {
+		if (i >= cuttingPoint)
+			return node;
+		if (rand() % 2 == 0) {
+			TreeNode* tryCut = CutTree(node->left, cuttingPoint, i + 1);
+			if (tryCut != nullptr)
+				return tryCut;
+			else
+				return CutTree(node->right, cuttingPoint, i + 1);				
+		}
+		else {				
+			TreeNode* tryCut = CutTree(node->right, cuttingPoint, i + 1);
+			if (tryCut != nullptr)
+				return tryCut;
+			else
+				return CutTree(node->left, cuttingPoint, i + 1);
+		}
+	}
+	else
+		return nullptr; //Reached end of tree without reaching cuttingPoint
+
+}
+
+TreeNode * CutTree(
+	TreeNode* node,
+	unsigned int cuttingPoint) {
+	return CutTree(node, cuttingPoint, 1);
+}
+
+unsigned int Height(TreeNode* node);
+unsigned int Height(TreeNode* node) {
+	if (node->left != nullptr && node->right != nullptr)
+		return std::max(1 + Height(node->left), 1 + Height(node->right));
+	else
+		return 1;
+}
+
+void CrossoverTree(
+	TreeNode* left,
+	TreeNode* right) {
+	unsigned int leftHeight = Height(left);
+	unsigned int rightHeight = Height(right);
+	unsigned int maxHeight = 5;
+	unsigned int rightCuttingPoint, leftCuttingPoint, min, max;
+
+	//Keep cutting points between points that don't make the tree grow beyon maxHeight
+	if (leftHeight > rightHeight) {
+		leftCuttingPoint =  rand() % (leftHeight - 1) + 1;
+		min = rightHeight - std::min(rightHeight, maxHeight - leftCuttingPoint);
+		max = std::min(rightHeight - 1, maxHeight - (leftHeight - leftCuttingPoint));
+		rightCuttingPoint = (rand() % (max - min + 1)) + min;
+	}
+	else {		
+		rightCuttingPoint = rand() % (rightHeight - 1) + 1;
+		min = leftHeight - std::min(leftHeight, maxHeight - rightCuttingPoint);
+		max = std::min(leftHeight - 1, maxHeight - (rightHeight - rightCuttingPoint));
+		leftCuttingPoint = (rand() % (max - min + 1)) + min;		
+	}
+	
+	TreeNode* leftCut = CutTree(left, leftCuttingPoint);
+	TreeNode* rightCut = CutTree(right, rightCuttingPoint);
+	if (rand() % 2 == 0) {
+		TreeNode* copy = leftCut->left->Copy();
+		delete leftCut->left;
+		if (rand() % 2 == 0) {
+			leftCut->left = rightCut->right->Copy();
+			delete rightCut->right;
+			rightCut->right = copy;
+		}
+		else {
+			leftCut->left = rightCut->left->Copy();			
+			delete rightCut->left;
+			rightCut->left = copy;
+		}
+	}
+	else {			
+		TreeNode* copy = leftCut->right->Copy();
+		delete leftCut->right;
+		if (rand() % 2 == 0) {
+			leftCut->right = rightCut->right->Copy();		
+			delete rightCut->right;
+			rightCut->right = copy;
+		}
+		else {
+			leftCut->right = rightCut->left->Copy();		
+			delete rightCut->left;
+			rightCut->left = copy;
+		}
+	}
+}
 
 void BinaryTreeGeneticAlgo::Crossover(
 	BinaryTreeChromosome * left,
 	BinaryTreeChromosome * right) {
-	TreeNode * leftBuy = left->buy;
-
-	left->buy = right->buy;
-	right->buy = leftBuy;
+	CrossoverTree(left->buy, right->buy);
+	CrossoverTree(left->sell, right->sell);
 }
