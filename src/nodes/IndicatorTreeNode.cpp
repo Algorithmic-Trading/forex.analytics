@@ -41,6 +41,11 @@ bool IndicatorTreeNode::Evaluate(
 
 void IndicatorTreeNode::GenerateRandomValue() {
   this->value *= perturbation_normal_dist(engine);
+  for (unsigned long i = 0; i < this->_indicators.size(); i++) {
+    if (this->_indicators[i]->Name == this->indicator) {
+      this->value = std::max((double)this->_indicators[i]->uniform_dist.min(), (double)std::min(this->value, (double)this->_indicators[i]->uniform_dist.max()));
+    }
+  }
   /*this->GenerateRandomSign();
   this->GenerateRandomIndicator();*/
 }
