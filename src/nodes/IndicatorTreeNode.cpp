@@ -14,6 +14,7 @@ IndicatorTreeNode::IndicatorTreeNode(
 
 	sign_uniform_dist = std::uniform_int_distribution<int>(0, 1);
 	indicator_uniform_dist = std::uniform_int_distribution<int>(0, indicators.size() - 1);
+  perturbation_normal_dist = std::normal_distribution<double>(1, 0.2);
 }
 
 IndicatorTreeNode::~IndicatorTreeNode() {
@@ -39,8 +40,14 @@ bool IndicatorTreeNode::Evaluate(
 }
 
 void IndicatorTreeNode::GenerateRandomValue() {
-  this->GenerateRandomSign();
-  this->GenerateRandomIndicator();
+  this->value *= perturbation_normal_dist(engine);
+  for (unsigned long i = 0; i < this->_indicators.size(); i++) {
+    if (this->_indicators[i]->Name == this->indicator) {
+      this->value = std::max((double)this->_indicators[i]->uniform_dist.min(), (double)std::min(this->value, (double)this->_indicators[i]->uniform_dist.max()));
+    }
+  }
+  /*this->GenerateRandomSign();
+  this->GenerateRandomIndicator();*/
 }
 
 void IndicatorTreeNode::GenerateRandomSign() {
@@ -66,7 +73,7 @@ void IndicatorTreeNode::Copy(TreeNode* destination) const {
   IndicatorTreeNode* dest = reinterpret_cast<IndicatorTreeNode*>(destination);
 
   dest->value = this->value;
-  dest->indicator = this->indicator.c_str();
+  dest->indicator = this->indicator;
   dest->sign = this->sign;
 }
 
@@ -74,7 +81,7 @@ TreeNode* IndicatorTreeNode::Copy() const {
   IndicatorTreeNode* dest = new IndicatorTreeNode(this->_indicators);
 
   dest->value = this->value;
-  dest->indicator = this->indicator.c_str();
+  dest->indicator = this->indicator;
   dest->sign = this->sign;
 
   return dest;

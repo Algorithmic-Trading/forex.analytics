@@ -8,10 +8,11 @@ class IndicatorTreeNode :
 	public TreeNode
 {
 private:
-	const std::vector<BaseIndicator *>& _indicators;
+	const std::vector<BaseIndicator *> _indicators;
 
 	std::uniform_int_distribution<int> sign_uniform_dist;
 	std::uniform_int_distribution<int> indicator_uniform_dist;
+	std::normal_distribution<double> perturbation_normal_dist;
 
 public:
 	std::string indicator;

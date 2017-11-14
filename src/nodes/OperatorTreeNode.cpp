@@ -44,8 +44,20 @@ void OperatorTreeNode::Copy(TreeNode* destination) const
   OperatorTreeNode* node = static_cast<OperatorTreeNode*>(destination);
 
   node->value = this->value;
-  this->left->Copy(node->left);
-  this->right->Copy(node->right);
+  if (this->left->left != nullptr && node->left->left != nullptr)
+    this->left->Copy(node->left);
+  else {  
+    if (node->left != nullptr)
+      delete node->left;
+    node->left = this->left->Copy();
+  }
+  if (this->right->left != nullptr && node->right->left != nullptr)
+    this->right->Copy(node->right);
+  else {
+    if (node->right != nullptr)
+      delete node->right;
+    node->right = this->right->Copy();   
+  }
 }
 
 TreeNode* OperatorTreeNode::Copy() const

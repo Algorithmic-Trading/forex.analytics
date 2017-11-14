@@ -139,9 +139,10 @@ TreeNode * BinaryTreeChromosome::GenerateTree(int index, int height) const {
 		ret->right = GenerateTree(index + 1, height);
 	}
 	else {
-		ret = new IndicatorTreeNode(this->_indicators);
+		IndicatorTreeNode* leafNode = new IndicatorTreeNode(this->_indicators);
 
-		ret->GenerateRandomValue();
+		leafNode->GenerateRandomIndicator();
+		ret = leafNode;
 	}
 
 	return ret;
