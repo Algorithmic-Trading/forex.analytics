@@ -27,34 +27,12 @@ inline double EvaluateFitness(FitnessFunctionArgs args)
 	{
 		int duration = trades->at(i).End->Time - trades->at(i).Start->Time;
 
-
-		if (duration != 0) {
-
-			if (trades->at(i).MaximumProfit > trades->at(i).MaximumLoss * 4 && trades->at(i).ProfitBeforeLoss)
-			{
-				//TODO: This is currently tailored for EUR/USD - will need to be changed
-				points += trades->at(i).MaximumProfit / duration * 900 * 10;
-				positive++;
-			}
-			else if (trades->at(i).MaximumProfit > trades->at(i).MaximumLoss * 4)
-			{
-				//TODO: This is currently tailored for EUR/USD - will need to be changed
-				points += trades->at(i).MaximumProfit / duration * 900;
-				positive++;
-			}
-			else
-			{
-				points -= trades->at(i).MaximumLoss;
-				negative++;
-			}
-		}
+		points += trades->at(i)trades->at(i).getRevenue() / duration;
 	}
-
-	points *= trades->size();
 
 	delete trades;
 
-	return double(positive - negative) * std::abs(points);
+	return points;
 }
 
 BinaryTreeChromosome* TradingSystem::PerformAnalysis(
