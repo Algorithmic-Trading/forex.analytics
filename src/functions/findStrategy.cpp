@@ -335,7 +335,7 @@ NAN_METHOD(findStrategy)
 				configuration->Get(Nan::New<v8::String>("strategy").ToLocalChecked()));
 
 			BinaryTreeChromosome* chromosome = BinaryTreeChromosome::FromJs(
-				IndicatorFactory::CreateAll(), strategy);
+				indicators, strategy);
 
 			baton->startingChromosome = chromosome;
 		}
