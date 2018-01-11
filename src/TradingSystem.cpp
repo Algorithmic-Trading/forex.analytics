@@ -20,14 +20,12 @@ inline double EvaluateFitness(FitnessFunctionArgs args)
 	std::vector<Trade>* trades = simulator.Simulate(args.chromosome, args.data);
 
 	double points = 0;
-	int positive = 0;
-	int negative = 0;
 
 	for (unsigned long i = 0; i < trades->size(); i++)
 	{
 		int duration = trades->at(i).End->Time - trades->at(i).Start->Time;
 
-		points += trades->at(i)trades->at(i).getRevenue() / duration;
+		points += trades->at(i).getRevenue() / duration;
 	}
 
 	delete trades;
